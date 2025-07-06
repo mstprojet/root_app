@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -56,6 +58,32 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  String _pingResult = 'No ping yet';
+
+  Future<void> pingBackend() async {
+    final uri = Uri.parse(
+      'http://10.0.2.2:3000/ping',
+    ); // Replace with your IP or localhost as needed
+
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _pingResult = data['message'] ?? 'No message';
+        });
+      } else {
+        setState(() {
+          _pingResult = 'Error: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _pingResult = 'Connection failed: $e';
+      });
+    }
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -108,6 +136,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 20),
+            Text('Ping result: $_pingResult'),
+            ElevatedButton(
+              onPressed: pingBackend,
+              child: const Text('Ping Backend'),
             ),
           ],
         ),
