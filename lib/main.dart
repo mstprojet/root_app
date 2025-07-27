@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -61,9 +62,11 @@ class _MyHomePageState extends State<MyHomePage> {
   String _pingResult = 'No ping yet';
 
   Future<void> pingBackend() async {
-    final uri = Uri.parse(
-      'http://10.0.2.2:3000/ping',
-    ); // Replace with your IP or localhost as needed
+    final url = kIsWeb
+        ? 'http://localhost:3000/ping' // for web (Chrome)
+        : 'http://10.0.2.2:3000/ping'; // for Android emulator
+
+    final uri = Uri.parse(url);
 
     try {
       final response = await http.get(uri);
