@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
+
+final Logger logger = Logger('RootAppLogger');
 
 void main() {
   runApp(const MyApp());
@@ -58,7 +61,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
   String _pingResult = 'No ping yet';
 
   Future<void> pingBackend() async {
